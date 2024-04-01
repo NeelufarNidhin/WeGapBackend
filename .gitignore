@@ -1,3 +1,7 @@
+WeGapApi/bin/*
+WeGapApi/obj/*
+
+
 # globs
 Makefile.in
 *.userprefs
