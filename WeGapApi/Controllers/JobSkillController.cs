@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure;
@@ -31,13 +32,24 @@ namespace WeGapApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin + " ," + SD.Role_Employer)]
-        public async Task<IActionResult> GetAllJobSKill()
+        [Authorize]
+        public async Task<IActionResult> GetAllJobSKill([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
 
         {
             try
             {
-                var jobSkillDto = await _service.JobSkillService.GetAllJobSkillAsync();
+                var totalJobSkill = await _service.JobSkillService.GetTotalJobSkill();
+                var jobSkillDto = await _service.JobSkillService.GetAllJobSkillAsync(pageNumber,pageSize);
+
+                Pagination pagination = new()
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalRecords = totalJobSkill.Count()
+                };
+
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobSkillDto;
                 return Ok(_response);

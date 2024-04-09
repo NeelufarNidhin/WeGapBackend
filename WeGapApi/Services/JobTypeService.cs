@@ -32,13 +32,19 @@ namespace WeGapApi.Services
 
         }
 
-       
-
-        public async Task<List<JobTypeDto>> GetAllJobTypeAsync()
+        public async Task<List<JobTypeDto>> GetTotalJobType()
         {
             var jobTypeDomain = await _repositoryManager.JobType.GetAllJobTypeAsync();
-
+           
             var jobTypeDto = _mapper.Map<List<JobTypeDto>>(jobTypeDomain);
+            return jobTypeDto;
+        }
+
+        public async Task<List<JobTypeDto>> GetAllJobTypeAsync(int pageNumber, int pageSize)
+        {
+            var jobTypeDomain = await _repositoryManager.JobType.GetAllJobTypeAsync();
+            var paginatedUsers = jobTypeDomain.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var jobTypeDto = _mapper.Map<List<JobTypeDto>>(paginatedUsers);
             return jobTypeDto;
         }
 
@@ -47,6 +53,17 @@ namespace WeGapApi.Services
             var jobTypeDomain = await _repositoryManager.JobType.GetJobTypeByIdAsync(id);
 
             
+
+            //mapping
+            var jobTypeDto = _mapper.Map<JobTypeDto>(jobTypeDomain);
+            return jobTypeDto;
+        }
+
+        public async Task<JobTypeDto> GetJobTypeByName(string jobTypeName)
+        {
+            var jobTypeDomain = await _repositoryManager.JobType.GetJobTypeByName(jobTypeName);
+
+
 
             //mapping
             var jobTypeDto = _mapper.Map<JobTypeDto>(jobTypeDomain);

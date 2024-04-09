@@ -1,5 +1,6 @@
 ﻿using System;
 using WeGapApi.Models;
+using WeGapApi.Models.Dto;
 
 namespace WeGapApi.Repository.Interface
 {
@@ -10,6 +11,8 @@ namespace WeGapApi.Repository.Interface
         Task<Job> AddJobsAsync(Job job);
         Task<Job> UpdateJobsAsync(Guid id, Job job);
         Task<Job> DeleteJobsAsync(Guid id);
+        Task<List<Job>> GetJobsByEmployerId(Guid id);
+         Task <List<Job>> GetSearchQuery(string searchString);
     }
 }
 

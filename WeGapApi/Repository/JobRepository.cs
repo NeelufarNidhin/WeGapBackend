@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WeGapApi.Data;
 using WeGapApi.Models;
+using WeGapApi.Models.Dto;
 using WeGapApi.Repository.Interface;
 
 namespace WeGapApi.Repository
@@ -21,26 +22,10 @@ namespace WeGapApi.Repository
                 // Add job to context
                 await _context.Jobs.AddAsync(job);
 
-              //  If job has associated job skills
-                //if (job.JobJobSkill != null && job.JobJobSkill.Any())
-                //{
-                    // Iterate over each job skill ID in the input array
-                    foreach (var jobSkillId in job.JobJobSkill.Select(jjs => jjs.JobSkillId))
-                    {
-                        var jobJobSkill = new JobJobSkill
-                        {
-                            JobId = job.Id, // Ensure that the job ID is properly assigned
-                            JobSkillId = jobSkillId
-                        };
-
-                        // Add the new JobJobSkill entry to the context
-                        _context.JobJobSkill.Add(jobJobSkill);
-                    }
-                //}
-
-                // Save changes to database
+                
                 await _context.SaveChangesAsync();
                 return job;
+              
             }
             catch (Exception ex)
             {
@@ -50,6 +35,7 @@ namespace WeGapApi.Repository
             }
         }
 
+       
 
         public async Task<Job> DeleteJobsAsync(Guid id)
         {
@@ -71,6 +57,12 @@ namespace WeGapApi.Repository
             return await _context.Jobs.Include(j=>j.Employer).ToListAsync();
         }
 
+        public async Task<List<Job>> GetJobsByEmployerId(Guid id)
+        {
+            var job =  _context.Jobs.Where(u => u.EmployerId == id).ToList();
+            return job;
+        }
+
         public async Task<Job> GetJobsByIdAsync(Guid id)
         {
             var jobfromDb = await _context.Jobs.FirstOrDefaultAsync(x => x.Id == id);
@@ -80,6 +72,8 @@ namespace WeGapApi.Repository
             }
             return jobfromDb;
         }
+
+       
 
         public async Task<Job> UpdateJobsAsync(Guid id, Job job)
         {
@@ -97,6 +91,14 @@ namespace WeGapApi.Repository
            await _context.SaveChangesAsync();
 
             return jobfromDb;
+        }
+
+        public async Task <List<Job>> GetSearchQuery(string searchString)
+        {
+            var jobs = _context.Jobs.Where(x => x.Employer.CompanyName.ToLower().Contains(searchString)
+            || x.JobTitle.ToLower().Contains(searchString) || x.Experience.ToLower().Contains(searchString)).ToList();
+
+            return  jobs;
         }
     }
 }

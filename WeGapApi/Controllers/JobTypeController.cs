@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -29,12 +30,23 @@ namespace WeGapApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin + " ," + SD.Role_Employer)]
-        public async Task<IActionResult> GetAllJobType()
+        [Authorize]
+        public async Task<IActionResult> GetAllJobType([FromQuery]int pageNumber = 1, [FromQuery] int pageSize = 5)
         {
-            try { 
+            try {
 
-            var jobTypeDto = await _service.JobTypeService.GetAllJobTypeAsync();
+                var totalJobType = await _service.JobTypeService.GetTotalJobType();
+
+            var jobTypeDto = await _service.JobTypeService.GetAllJobTypeAsync(pageNumber,pageSize);
+
+                Pagination pagination = new Pagination
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalRecords = totalJobType.Count()
+                };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobTypeDto;
                 return Ok(_response);
@@ -62,7 +74,7 @@ namespace WeGapApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [Authorize(Roles = SD.Role_Admin + " ," + SD.Role_Employer)]
+        [Authorize]
         public async Task<IActionResult> GetJobTypeById([FromRoute] Guid id)
         {
             //obtain data

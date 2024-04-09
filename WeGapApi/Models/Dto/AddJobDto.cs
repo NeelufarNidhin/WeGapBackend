@@ -10,17 +10,18 @@ namespace WeGapApi.Models.Dto
         public string Description { get; set; }
         public string Experience { get; set; }
         public double Salary { get; set; }
-       
 
-        //Navigation property
+
         public Guid EmployerId { get; set; }
-    
+        public List<Guid> JobSkill { get; set; }
+
 
         public Guid JobTypeId { get; set; }
 
 
-        public ICollection<JobJobSkill> JobJobSkill { get; set; }
+        public List<JobJobSkill> JobJobSkill { get; set; }
        
+      
     }
 }
 

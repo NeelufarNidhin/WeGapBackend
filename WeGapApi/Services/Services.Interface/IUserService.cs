@@ -7,6 +7,8 @@ namespace WeGapApi.Services.Services.Interface
 	{
        
         Task<List<UserDto>> GetAllUsers(int pageNumber, int pageSize);
+         Task<List<UserDto>> GetTotalUsers();
+        Task<List<UserDto>> GetRole(string userRole);
         Task<UserDto> BlockUnblock(string id);
         Task<UserDto> UpdateUser(string id, UpdateUserDto updateUserDto);
         Task<UserDto> DeleteUser(string id);

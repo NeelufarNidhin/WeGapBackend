@@ -30,7 +30,7 @@ namespace WeGapApi.Services
             _employerService = new Lazy<IEmployerService>(() => new EmployerService(repositoryManager, mapper));
             _educationService = new Lazy<IEducationService>(() => new EducationService(repositoryManager, mapper));
             _experienceService = new Lazy<IExperienceService>(() => new ExperienceService(repositoryManager, mapper));
-            _jobService = new Lazy<IJobService>(() => new JobService(repositoryManager, mapper));
+            _jobService = new Lazy<IJobService>(() => new JobService(repositoryManager, mapper,db));
             _jobSkillService = new Lazy<IJobSkillService>(() => new JobSkillService(repositoryManager, mapper));
             _jobTypeService = new Lazy<IJobTypeService>(() => new JobTypeService(repositoryManager, mapper));
             _skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager, mapper));

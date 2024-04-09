@@ -29,26 +29,26 @@ namespace WeGapApi.Data
         {
 
             base.OnModelCreating(modelBuilder);
-          
 
 
-            modelBuilder.Entity<Job>()
-                .HasOne(j => j.JobType)   // Job has one JobType
-                .WithMany()               // JobType can be associated with many Jobs
-                .HasForeignKey(j => j.JobTypeId);  // Foreign key
 
-            modelBuilder.Entity<JobJobSkill>()
-                .HasKey(jjs => new { jjs.JobId, jjs.JobSkillId });  //
+            //modelBuilder.Entity<Job>()
+            //    .HasOne(j => j.JobType)   // Job has one JobType
+            //    .WithMany()               // JobType can be associated with many Jobs
+            //    .HasForeignKey(j => j.JobTypeId);  // Foreign key
 
-            modelBuilder.Entity<JobJobSkill>()
-                .HasOne(jjs => jjs.Job)
-                .WithMany(j => j.JobJobSkill)
-                .HasForeignKey(jjs => jjs.JobId);
+            //modelBuilder.Entity<JobJobSkill>()
+            //    .HasKey(jjs => new { jjs.JobId, jjs.JobSkillId });  //
 
-            modelBuilder.Entity<JobJobSkill>()
-               .HasOne(jjs => jjs.JobSkill)
-               .WithMany()
-               .HasForeignKey(jjs => jjs.JobSkillId);
+            //modelBuilder.Entity<JobJobSkill>()
+            //    .HasOne(jjs => jjs.Job)
+            //    .WithMany(j => j.JobJobSkill)
+            //    .HasForeignKey(jjs => jjs.JobId);
+
+            //modelBuilder.Entity<JobJobSkill>()
+            //   .HasOne(jjs => jjs.JobSkill)
+            //   .WithMany()
+            //   .HasForeignKey(jjs => jjs.JobSkillId);
 
 
         }

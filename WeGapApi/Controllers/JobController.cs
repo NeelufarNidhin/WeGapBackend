@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -35,10 +36,40 @@ namespace WeGapApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = SD.Role_Employer +" ," + SD.Role_Employee)]
-        public async Task<IActionResult> GetAllJobs()
+        public async Task<IActionResult> GetAllJobs([FromQuery] string searchString, [FromQuery] string jobType, [FromQuery] string jobSkill,
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
         {
-            try { 
-            var jobDto = await _service.JobService.GetAllJobsAsync();
+            try {
+
+                var totalJobs = await _service.JobService.GetTotalJobs();
+            var jobDto = await _service.JobService.GetAllJobsAsync(pageNumber, pageSize);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    jobDto = await _service.JobService.GetSearchQuery(searchString);
+
+                }
+
+                if (!string.IsNullOrEmpty(jobType))
+                {
+                    jobDto = await _service.JobService.GetJobType(jobType);
+                }
+
+                if (!string.IsNullOrEmpty(jobSkill))
+                {
+                    jobDto = await _service.JobService.GetJobSkill(jobSkill);
+                }
+
+
+
+                Pagination pagination = new Pagination()
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalRecords = totalJobs.Count()
+                };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobDto;
                 return Ok(_response);
@@ -72,6 +103,40 @@ namespace WeGapApi.Controllers
             try { 
 
             var jobDto = await _service.JobService.GetJobsByIdAsync(id);
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = jobDto;
+                return Ok(_response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+
+
+        }
+
+
+
+        [HttpGet]
+        [Route("employer/{id}")]
+        [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
+        public async Task<IActionResult> GetJobByEmployerId([FromRoute] Guid id)
+        {
+            try
+            {
+
+                var jobDto = await _service.JobService.GetJobsByEmployerId(id);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobDto;
                 return Ok(_response);
@@ -130,6 +195,35 @@ namespace WeGapApi.Controllers
 
 
         }
+
+
+        [HttpGet("{id}/jobJobSkills")]
+        [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
+        public async Task<IActionResult> GetJobJobSkillsById(Guid id)
+        {
+            try
+            {
+                var jobJobSkills = await _service.JobService.GetJobJobSkillsByIdAsync(id);
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = jobJobSkills;
+                return Ok(_response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+        }
+
 
         [HttpPut("{id}")]
         [Authorize(Roles = SD.Role_Employer)]

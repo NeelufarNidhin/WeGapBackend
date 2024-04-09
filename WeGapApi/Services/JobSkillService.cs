@@ -30,13 +30,20 @@ namespace WeGapApi.Services
             return jobSkillDto;
         }
 
-        
-
-        public async Task<List<JobSkillDto>> GetAllJobSkillAsync()
+        public async Task<List<JobSkillDto>> GetTotalJobSkill()
         {
             var jobSkillDomain = await _repositoryManager.JobSkill.GetAllJobSkillAsync();
 
             var jobSkillDto = _mapper.Map<List<JobSkillDto>>(jobSkillDomain);
+            return jobSkillDto;
+        }
+
+        public async Task<List<JobSkillDto>> GetAllJobSkillAsync(int pageNumber, int pageSize)
+        {
+            var jobSkillDomain = await _repositoryManager.JobSkill.GetAllJobSkillAsync();
+            var paginatedUsers = jobSkillDomain.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var jobSkillDto = _mapper.Map<List<JobSkillDto>>(paginatedUsers);
             return jobSkillDto;
         }
 
@@ -46,6 +53,19 @@ namespace WeGapApi.Services
             var jobSkillDomain = await _repositoryManager.JobSkill.GetJobSkillByIdAsync(id);
 
            
+
+            //mapping
+            var jobSkillDto = _mapper.Map<JobSkillDto>(jobSkillDomain);
+            return jobSkillDto;
+        }
+
+
+        public async Task<JobSkillDto> GetJobSkillByName(string jobSkill)
+        {
+            //obtain data
+            var jobSkillDomain = await _repositoryManager.JobSkill.GetJobSkillByName(jobSkill);
+
+
 
             //mapping
             var jobSkillDto = _mapper.Map<JobSkillDto>(jobSkillDomain);
@@ -78,6 +98,10 @@ namespace WeGapApi.Services
             var jobSkillDto = _mapper.Map<JobSkillDto>(jobSkillDomain);
                  return jobSkillDto;
         }
+
+        
+
+        
     }
 }
 
