@@ -57,6 +57,16 @@ namespace WeGapApi.Repository
             return jobTypefromDb;
         }
 
+        public async Task<JobType> GetJobTypeByName(string jobTypeName)
+        {
+            var jobTypefromDb = await _context.JobType.FirstOrDefaultAsync(x => x.JobTypeName == jobTypeName);
+            if (jobTypefromDb == null)
+            {
+                throw new InvalidOperationException("Job Type not Found");
+            }
+            return jobTypefromDb;
+        }
+
         public  async Task<JobType> UpdateJobTypeAsync(Guid id, JobType jobType)
         {
             var jobTypefromDb = await _context.JobType.FirstOrDefaultAsync(x => x.Id == id);

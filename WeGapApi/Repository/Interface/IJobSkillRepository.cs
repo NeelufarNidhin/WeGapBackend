@@ -10,7 +10,7 @@ namespace WeGapApi.Repository.Interface
         Task<JobSkill> AddJobSkillAsync(JobSkill jobSkill);
         Task<JobSkill> UpdateJobSkillAsync(Guid id, JobSkill jobSkill);
         Task<JobSkill> DeleteJobSkillAsync(Guid id);
-        
+        Task<JobSkill> GetJobSkillByName(string jobSkill);
     }
 }
 

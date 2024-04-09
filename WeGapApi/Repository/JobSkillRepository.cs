@@ -61,6 +61,17 @@ namespace WeGapApi.Repository
             return jobSkillfromDb;
         }
 
+        public async Task<JobSkill> GetJobSkillByName(string jobSkill)
+        {
+            var jobSkillfromDb = await _context.JobSkill.FirstOrDefaultAsync(x => x.SkillName== jobSkill);
+
+            if (jobSkillfromDb == null)
+            {
+                throw new InvalidOperationException("Job skill not Found");
+            }
+            return jobSkillfromDb;
+        }
+
         public async Task<JobSkill> UpdateJobSkillAsync(Guid id, JobSkill jobSkill)
         {
             var jobSkillfromDb = await _context.JobSkill.FirstOrDefaultAsync(x => x.Id == id);

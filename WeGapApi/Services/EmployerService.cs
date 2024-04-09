@@ -54,8 +54,7 @@ namespace WeGapApi.Services
             //return DTO usimg Mapper
             var employerDto = _mapper.Map<EmployerDto>(employer);
 
-            //if (employer is null)
-            //    return NotFound();
+           
 
             return employerDto;
         }
@@ -64,9 +63,7 @@ namespace WeGapApi.Services
 
         public async Task<EmployerDto> UpdateEmployerAsync(Guid id, UpdateEmployerDto updateEmployerDto)
         {
-            ////validation
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+           
 
 
             //Map DTO to Domain model
@@ -75,8 +72,7 @@ namespace WeGapApi.Services
             //check if employee exists
             employerDomain = await _repositoryManager.Employer.UpdateEmployerAsync(id, employerDomain);
 
-            //if (employerDomain == null)
-            //    return NotFound();
+           
 
 
             var employerDto = _mapper.Map<EmployerDto>(employerDomain);

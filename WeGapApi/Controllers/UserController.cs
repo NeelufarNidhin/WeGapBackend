@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Azure;
 using Microsoft.AspNetCore.Authorization;
@@ -36,31 +37,42 @@ namespace WeGapApi.Controllers
         
         [HttpGet()]
         [Authorize(Roles = SD.Role_Admin)]
-        public async Task<IActionResult> GetAllUser([FromQuery] string searchString, [FromQuery] string role,
-            [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAllUser([FromQuery] string searchString, [FromQuery] string userRole,
+            [FromQuery] int pageNumber = 1 , [FromQuery] int pageSize = 5)
 
         {
             try
             {
-                // var users = _service.UserService.GetAllUsers();
-                List<UserDto> users;
-                if (string.IsNullOrEmpty(searchString))
-                {
-                    users = await _service.UserService.GetAllUsers(pageNumber, pageSize);
-                    if (!string.IsNullOrEmpty(role))
-                    {
-                        users = users.Where(u => u.Role == role).ToList();
-                    }
-                }
+                 var totalUsers = await _service.UserService.GetTotalUsers();
+               // List<UserDto> users;
                
-                else
-                {
-                    var searchResult = await _service.UserService.GetSearchQuery(searchString);
-                     users = searchResult.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-                }
                
+               
+                   var users = await _service.UserService.GetAllUsers(pageNumber, pageSize);
 
-               
+                 
+
+                if (!string.IsNullOrEmpty(userRole))
+                    {
+                    // users = users.Where(u => u.Role == userRole).ToList();
+                    users = await _service.UserService.GetRole(userRole);
+                    }
+                
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                   users = await _service.UserService.GetSearchQuery(searchString);
+                    
+                }
+
+                Pagination pagination = new()
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalRecords = totalUsers.Count()
+                };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = users;
                 return Ok(_response);

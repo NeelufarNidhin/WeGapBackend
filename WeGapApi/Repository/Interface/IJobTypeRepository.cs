@@ -10,6 +10,7 @@ namespace WeGapApi.Repository.Interface
         Task<JobType> AddJobTypeAsync(JobType jobtype);
         Task<JobType> UpdateJobTypeAsync(Guid id, JobType jobType);
         Task<JobType> DeleteJobTypeAsync(Guid id);
+        Task<JobType> GetJobTypeByName(string jobTypeName);
     }
 }
 
