@@ -11,7 +11,14 @@ namespace WeGapApi.Models.Dto
         public string Experience { get; set; }
         public double Salary { get; set; }
 
+        public Guid EmployerId { get; set; }
         public List<Guid> JobSkill { get; set; }
+
+
+        public Guid JobTypeId { get; set; }
+
+
+        public List<JobJobSkill> JobJobSkill { get; set; }
 
     }
 }
