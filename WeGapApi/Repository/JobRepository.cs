@@ -86,6 +86,10 @@ namespace WeGapApi.Repository
 
             jobfromDb.JobTitle = job.JobTitle;
             jobfromDb.Description = job.Description;
+            jobfromDb.Salary = job.Salary;
+            jobfromDb.Experience = job.Experience;
+            jobfromDb.JobTypeId = job.JobTypeId;
+
             _context.Jobs.Update(jobfromDb);
 
            await _context.SaveChangesAsync();
