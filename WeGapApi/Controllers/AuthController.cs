@@ -76,16 +76,7 @@ namespace WeGapApi.Controllers
         }
 
 
-
-
-
-
-
-        //private string GenerateRandomOtp()
-        //{
-        //    Random random = new Random();
-        //    return random.Next(100000, 999999).ToString();
-        //}
+       
 
 
         [HttpPost("login")]
@@ -134,12 +125,12 @@ namespace WeGapApi.Controllers
 
 
         [HttpPost("login-2FA")]
-        public async Task<IActionResult> LoginWithOTP([FromBody] OTPLoginDto model)
+        public async Task<IActionResult> LoginWithOTP([FromBody] OTPLoginDto loginDto)
         {
             try
             {
 
-                var result = await _service.AuthenticationService.LoginWithOTP(model);
+                var result = await _service.AuthenticationService.LoginWithOTP(loginDto.Otp);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = result;
                 return Ok(_response);
@@ -172,7 +163,7 @@ namespace WeGapApi.Controllers
             try
             {
 
-                var result = await _service.AuthenticationService.ResendOTP(model);
+                var result = await _service.AuthenticationService.ResendOTP(model.Email);
 
                 _response.StatusCode = HttpStatusCode.OK;
 

@@ -8,8 +8,8 @@ namespace WeGapApi.Services.Services.Interface
 	{
 		Task<IdentityResult> Register(SignUpRequestDto signupRequestDto);
 		Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
-		Task<bool> LoginWithOTP(OTPLoginDto otpLoginDto);
-		Task<bool> ResendOTP(ResendOtpDto resendOtp);
+		Task<bool> ResendOTP(string userId);
+		Task<bool> LoginWithOTP(string otp);
 	}
 }
 

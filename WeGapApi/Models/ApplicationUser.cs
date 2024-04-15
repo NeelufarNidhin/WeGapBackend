@@ -17,7 +17,7 @@ namespace WeGapApi.Models
 		public string Createby { get; set; }
         public bool IsBlocked { get; set; }
         public bool IsProfile { get; set; }
-
+        public string OTP { get; set; }
     }
 }
 
