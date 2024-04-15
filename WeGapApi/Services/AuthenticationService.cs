@@ -88,17 +88,20 @@ namespace WeGapApi.Services
 
         }
 
-        public async Task<bool> LoginWithOTP(OTPLoginDto otpLoginDto)
+        public async Task<bool> LoginWithOTP(string otp)
         {
-            var user = await _userManager.FindByEmailAsync(otpLoginDto.Email);
+            
+            var user =  _db.ApplicationUsers.FirstOrDefault(u => u.OTP == otp);
 
-
-            var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", otpLoginDto.Otp);
-
-            if (!result)
+            if (user == null)
             {
                 throw new InvalidOperationException("Invalid Otp");
             }
+
+            user.IsProfile = true;
+            user.OTP = null;
+            _db.SaveChanges();
+
             return true;
         }
 
@@ -118,16 +121,19 @@ namespace WeGapApi.Services
                 Email = signupRequestDto.UserName,
                 NormalizedEmail = signupRequestDto.UserName.ToUpper(),
                 Role = signupRequestDto.Role,
-                TwoFactorEnabled = true
+                TwoFactorEnabled = true,
+                IsProfile  = false
             };
 
+            var otptoken = GenerateRandomOtp(); 
 
+            user.OTP = otptoken;
 
-                var result = await _userManager.CreateAsync(user, signupRequestDto.Password);
+            var result = await _userManager.CreateAsync(user, signupRequestDto.Password);
 
             if (!result.Succeeded)
             {
-                // Handle other errors if necessary
+               
                 throw new InvalidOperationException("Failed to register user");
             }
 
@@ -135,7 +141,7 @@ namespace WeGapApi.Services
 
             if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult())
                     {
-                        //create roles in database
+                        
 
 
                         await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
@@ -159,36 +165,42 @@ namespace WeGapApi.Services
                         await _userManager.AddToRoleAsync(user, SD.Role_Employee);
 
                     }
-                    var otptoken = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                    //  string otptoken = GenerateRandomOtp();
+                  
                     await _emailSender.SendEmailAsync(user.Email, "OTP Confirmation", otptoken);
                     return result;
-
-
-                
-                 
-
 
 
         }
 
 
-        public async Task<bool> ResendOTP(ResendOtpDto resendOtp)
+        public async Task<bool> ResendOTP(string email)
         {
-            var user = await _userManager.FindByEmailAsync(resendOtp.Email);
+            
+
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == email);
+
             if (user is null)
             {
                 throw new InvalidOperationException("User not found");
             }
-            var otptoken = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
-            user.TwoFactorEnabled = true;
-            await _userManager.UpdateAsync(user);
+            var otptoken = GenerateRandomOtp();
+            user.OTP = otptoken;
+            _db.SaveChanges();
 
-            // Send the new OTP to the user's email
             await _emailSender.SendEmailAsync(user.Email, "New OTP", $"Your new OTP is: {otptoken}");
+           
 
             return true;
+        }
+
+
+        private string GenerateRandomOtp(int length = 6)
+        {
+            const string chars = "0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
