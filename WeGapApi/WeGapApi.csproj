@@ -25,6 +25,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +40,7 @@
     <None Remove="Repository\" />
     <None Remove="Services\" />
     <None Remove="Services\Services.Interface\" />
+    <None Remove="Chats\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -48,5 +52,6 @@
     <Folder Include="Repository\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Services.Interface\" />
+    <Folder Include="Chats\" />
   </ItemGroup>
 </Project>

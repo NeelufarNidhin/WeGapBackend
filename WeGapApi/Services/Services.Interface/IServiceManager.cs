@@ -13,6 +13,7 @@ namespace WeGapApi.Services.Services.Interface
         ISkillService SkillService { get; }
         IJobTypeService JobTypeService { get; }
 		IAuthenticationService AuthenticationService { get; }
+		
 	}
 }
 

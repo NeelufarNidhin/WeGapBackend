@@ -33,7 +33,7 @@ namespace WeGapApi.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAllJobSKill([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+        public async Task<IActionResult> GetAllJobSKill([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
 
         {
             try

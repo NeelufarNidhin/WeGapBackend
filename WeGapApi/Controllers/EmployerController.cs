@@ -20,7 +20,7 @@ using WeGapApi.Utility;
 namespace WeGapApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = SD.Role_Employer)]
+   
     public class EmployerController : ControllerBase
     {
 
@@ -33,7 +33,7 @@ namespace WeGapApi.Controllers
 
 
         [HttpGet]
-      //  [Authorize]
+        [Authorize(Roles = SD.Role_Employee + ", " + SD.Role_Employer)]
         public async Task<IActionResult> GetAllEmployers()
         {
 
@@ -51,7 +51,7 @@ namespace WeGapApi.Controllers
         }
 
         [HttpGet("exists/{userId}")]
-       // [Authorize(Roles = SD.Role_Employer)]
+        [Authorize(Roles = SD.Role_Employer)]
         public async Task<IActionResult> EmployerExisits(string userId)
         {
             try { 
@@ -70,7 +70,7 @@ namespace WeGapApi.Controllers
 
         [HttpGet]
         [Route("{id}")]
-      //  [Authorize]
+        [Authorize(Roles = SD.Role_Employee + ", " + SD.Role_Employer)]
         public async Task<IActionResult> GetEmployerById([FromRoute] Guid id)
         {
 
@@ -93,7 +93,7 @@ namespace WeGapApi.Controllers
 
        
         [HttpPost]
-       // [Authorize(Roles = SD.Role_Employer)]
+        [Authorize(Roles = SD.Role_Employer)]
         public async Task<IActionResult> AddEmployer([FromBody] AddEmployerDto addEmployerDto)
 
         {
@@ -117,7 +117,7 @@ namespace WeGapApi.Controllers
 
 
         [HttpPut("{id}")]
-      //  [Authorize(Roles = SD.Role_Employer)]
+       [Authorize(Roles = SD.Role_Employer)]
         public async Task<IActionResult> UpdateEmployer(Guid id, [FromBody] UpdateEmployerDto updateEmployerDto)
         {
 
