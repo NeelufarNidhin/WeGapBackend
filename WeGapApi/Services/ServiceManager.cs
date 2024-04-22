@@ -21,6 +21,7 @@ namespace WeGapApi.Services
         private readonly Lazy<IJobTypeService> _jobTypeService;
         private readonly Lazy<IEducationService> _educationService;
         private readonly Lazy<IExperienceService> _experienceService;
+       
 
 		public ServiceManager(IRepositoryManager repositoryManager,IMapper mapper, UserManager<ApplicationUser> userManager,IBlobService blobService,
             ApplicationDbContext db, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
@@ -35,6 +36,7 @@ namespace WeGapApi.Services
             _jobTypeService = new Lazy<IJobTypeService>(() => new JobTypeService(repositoryManager, mapper));
             _skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(db, userManager,roleManager, configuration, emailSender));
+           
         }
 
         public IUserService UserService => _userService.Value;
@@ -55,6 +57,8 @@ namespace WeGapApi.Services
         public ISkillService SkillService => _skillService.Value;
 
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
+
+       
     }
 }
 

@@ -17,7 +17,7 @@ namespace WeGapApi.Repository
         private readonly Lazy<IJobSkillRepository> _jobSkillRepository;
         private readonly Lazy<IJobTypeRepository> _jobTypeRepository;
         private readonly Lazy<ISkillRepository> _skillRepository;
-
+        private readonly Lazy<IMessageRepository> _messageRepository;
 
         public RepositoryManager(ApplicationDbContext dbContext)
 		{
@@ -31,6 +31,7 @@ namespace WeGapApi.Repository
             _jobSkillRepository = new Lazy<IJobSkillRepository>(() => new JobSkillRepository(dbContext));
             _jobTypeRepository = new Lazy<IJobTypeRepository>(() => new JobTypeRepository(dbContext));
             _skillRepository = new Lazy<ISkillRepository>(() => new SkillRepository(dbContext));
+            _messageRepository = new Lazy<IMessageRepository>(() => new MessageRepository(dbContext));
 
 
         }
@@ -52,6 +53,8 @@ namespace WeGapApi.Repository
         public IJobTypeRepository JobType => _jobTypeRepository.Value;
 
         public ISkillRepository Skill => _skillRepository.Value;
+
+        public IMessageRepository MessageRepo => _messageRepository.Value;
 
         public void Save()
         {

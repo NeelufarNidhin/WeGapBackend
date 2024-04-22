@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using WeGapApi.Services.Services.Interface;
 using WeGapApi.Services;
 using Azure.Storage.Blobs;
-
+using WeGapApi.Chats;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,9 +53,9 @@ builder.Services.AddAuthentication(u =>
 
     };
 });
+builder.Services.AddSignalR();
 
-builder.Services.AddCors();
-
+//builder.Services.AddCors();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -81,8 +81,20 @@ builder.Services.AddScoped<IJobSkillRepository, JobSkillRepository>();
 builder.Services.AddScoped<IJobTypeRepository, JobTypeRepository>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 //builder.Services.AddScoped<ILogger>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithExposedHeaders("*");
+    });
 
+
+});
 builder.Services.AddSingleton(u => new BlobServiceClient(builder.Configuration.GetConnectionString("StorageAccount")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
 //Adding Authorization in swagger for JWTBearer Support
@@ -120,6 +132,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -132,11 +146,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
+//app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors();
+app.MapHub<ChatHub>("/chat");
+
 
 app.Run();
 
