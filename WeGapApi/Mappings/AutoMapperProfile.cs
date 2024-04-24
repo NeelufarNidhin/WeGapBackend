@@ -34,6 +34,9 @@ namespace WeGapApi.Mappings
 			CreateMap<Skill, SkillDto>().ReverseMap();
 			CreateMap<AddSkillDto, Skill>().ReverseMap();
 			CreateMap<UpdateSkillDto, Skill>().ReverseMap();
+			CreateMap<JobApplication, JobApplicationDto>().ReverseMap();
+			CreateMap<AddJobApplicationDto, JobApplication>().ReverseMap();
+			CreateMap<UpdateJobApplicationDto, JobApplication>().ReverseMap();
         }
 	}
 }

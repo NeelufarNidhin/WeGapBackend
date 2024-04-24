@@ -82,6 +82,7 @@ builder.Services.AddScoped<IJobTypeRepository, JobTypeRepository>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 //builder.Services.AddScoped<ILogger>();
 builder.Services.AddCors(options =>
 {

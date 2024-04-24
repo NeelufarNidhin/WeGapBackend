@@ -29,12 +29,12 @@ namespace WeGapApi.Chats
             _context.ChatMessages.Add(chatMessage);
             await _context.SaveChangesAsync();
 
-            // Broadcast the message
-          
-            await Clients.User(receiver).SendAsync("ReceiveMessage", sender, message, DateTime.Now.ToShortTimeString());
-
-            // Send notification
            
+          
+            await Clients.All.SendAsync("ReceiveMessage", sender, message, DateTime.Now.ToShortTimeString());
+
+           // await Clients.User(receiver).SendAsync("ReceiveMessage", sender, message, DateTime.Now.ToShortTimeString());
+
 
             await Clients.User(receiver).SendAsync("ReceiveNotification", "New Message", "You have received a new message."); // Notification to receiver
             await Clients.User(sender).SendAsync("ReceiveNotification", "Message Sent", "Your message was sent successfully."); // Notification to sender

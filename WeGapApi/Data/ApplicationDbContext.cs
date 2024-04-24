@@ -24,7 +24,7 @@ namespace WeGapApi.Data
         public DbSet<JobJobSkill> JobJobSkill { get; set; }
         public DbSet<Skill> Skill { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
-
+        public DbSet<JobApplication> JobApplications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

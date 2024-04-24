@@ -15,7 +15,7 @@ namespace WeGapApi.Repository.Interface
 		IJobTypeRepository JobType { get; }
         ISkillRepository Skill { get; }
 		IMessageRepository MessageRepo { get; }
-
+		IJobApplicationRepository JobApplication { get; }
 
         void Save();
 			 
