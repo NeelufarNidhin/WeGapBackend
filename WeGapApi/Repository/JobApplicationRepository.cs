@@ -70,6 +70,9 @@ namespace WeGapApi.Repository
             }
 
             jobApplicationFromDb.JobStatus = jobApplication.JobStatus;
+            //jobApplicationFromDb.Availability = jobApplication.Availability;
+            //jobApplicationFromDb.CoverLetter = jobApplication.CoverLetter;
+            //jobApplicationFromDb.ResumeFileName = jobApplication.ResumeFileName;
 
             _context.JobApplications.Update(jobApplicationFromDb);
             _context.SaveChanges();

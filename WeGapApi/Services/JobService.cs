@@ -138,22 +138,22 @@ namespace WeGapApi.Services
 
         }
 
-        public async Task<JobDto> UpdateJobsAsync(Guid id, UpdateJobDto updateJobDto)
-        {
+        //public async Task<JobDto> UpdateJobsAsync(Guid id, UpdateJobDto updateJobDto)
+        //{
 
 
 
-            //Map DTO to Domain model
-            var jobDomain = _mapper.Map<Job>(updateJobDto);
+        //    //Map DTO to Domain model
+        //    var jobDomain = _mapper.Map<Job>(updateJobDto);
 
-            //check if employee exists
-            jobDomain = await _repositoryManager.Job.UpdateJobsAsync(id, jobDomain);
+        //    //check if employee exists
+        //    jobDomain = await _repositoryManager.Job.UpdateJobsAsync(id, jobDomain);
 
+        //    _context.SaveChanges();
 
-
-            var jobDto = _mapper.Map<JobDto>(jobDomain);
-            return jobDto;
-        }
+        //    var jobDto = _mapper.Map<JobDto>(jobDomain);
+        //    return jobDto;
+        //}
 
         public async Task<List<JobDto>> GetSearchQuery(string searchString)
         {
@@ -191,40 +191,51 @@ namespace WeGapApi.Services
 
         }
 
-        //public async Task<JobDto> UpdateJobsAsync(Guid id, UpdateJobDto updateJobDto)
-        //{
-        //    // Obtain existing job entity
-        //    var existingJob = await _repositoryManager.Job.GetJobsByIdAsync(id);
+        public async Task<JobDto> UpdateJobsAsync(Guid id, UpdateJobDto updateJobDto)
+        {
+            // Obtain existing job entity
+            var existingJob = await _repositoryManager.Job.GetJobsByIdAsync(id);
 
-        //    // Map DTO to existing domain model
-        //    _mapper.Map(updateJobDto, existingJob);
+            // Map DTO to existing domain model
+            _mapper.Map(updateJobDto, existingJob);
 
-        //    // Clear existing job job skills
-        //    existingJob.JobJobSkill.Clear();
+            // Fetch existing job skills
+            var existingJobSkills =  _context.JobJobSkill.Where(u=>u.JobId ==id);
 
-        //    // Add/update job job skills
-        //    if (updateJobDto.JobSkill != null && updateJobDto.JobSkill.Any())
-        //    {
-        //        foreach (var skillId in updateJobDto.JobSkill)
-        //        {
-        //            var jobSkill = await _repositoryManager.JobSkill.GetJobSkillByIdAsync(skillId);
-        //            if (jobSkill != null)
-        //            {
-        //                JobJobSkill jobJobSkill = new JobJobSkill { JobId = id, JobSkillId = skillId };
-        //                existingJob.JobJobSkill.Add(jobJobSkill);
-        //            }
-        //        }
-        //    }
+            // Remove existing job skills that are not present in the update
+            foreach (var existingJobSkill in existingJobSkills)
+            {
+                if (!updateJobDto.JobSkill.Contains(existingJobSkill.JobSkillId))
+                {
+                    existingJob.JobJobSkill.Remove(existingJobSkill);
+                }
+            }
 
-        //  await  _context.SaveChangesAsync();
-        //    // Update job in the repository
-        //    var updatedJob = await _repositoryManager.Job.UpdateJobsAsync(id, existingJob);
+            // Add/update job skills from the update
+            foreach (var skillId in updateJobDto.JobSkill)
+            {
+                var jobSkill = await _repositoryManager.JobSkill.GetJobSkillByIdAsync(skillId);
+                if (jobSkill != null)
+                {
+                    // Check if the job skill already exists in the job
+                    if (!existingJob.JobJobSkill.Any(js => js.JobSkillId == skillId))
+                    {
+                        JobJobSkill jobJobSkill = new JobJobSkill { JobId = id, JobSkillId = skillId };
+                        existingJob.JobJobSkill.Add(jobJobSkill);
+                    }
+                }
+            }
 
-        //    // Map and return updated job DTO
-        //    var updatedJobDto = _mapper.Map<JobDto>(updatedJob);
-        //    return updatedJobDto;
-        //}
+            // Save changes to update job skills
+            await _context.SaveChangesAsync();
 
+            // Update job in the repository
+            var updatedJob = await _repositoryManager.Job.UpdateJobsAsync(id, existingJob);
+
+            // Map and return updated job DTO
+            var updatedJobDto = _mapper.Map<JobDto>(updatedJob);
+            return updatedJobDto;
+        }
     }
-}
+    }
 

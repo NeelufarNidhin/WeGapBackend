@@ -15,10 +15,12 @@ namespace WeGapApi.Controllers
     {
         private readonly IServiceManager _service;
         private readonly ApiResponse _response;
-        public JobApplicationController(IServiceManager service)
+        private readonly IBlobService _blobService;
+        public JobApplicationController(IServiceManager service, IBlobService blobService)
         {
             _service = service;
             _response = new ApiResponse();
+            _blobService = blobService;
         }
 
         [HttpGet]
@@ -83,12 +85,27 @@ namespace WeGapApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
-        public async Task<IActionResult> CreateJobApplication([FromBody] AddJobApplicationDto addJobApplicationDto)
+        public async Task<IActionResult> CreateJobApplication([FromForm] AddJobApplicationDto addJobApplicationDto)
         {
             try
             {
                 if (!ModelState.IsValid)
+                {
+
                     return BadRequest(ModelState);
+                }
+
+                if ( addJobApplicationDto.Resume  == null || addJobApplicationDto.Resume.Length == 0)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                string fileName = $"{Guid.NewGuid()}{Path.GetExtension(addJobApplicationDto.Resume.FileName)}";
+                addJobApplicationDto.ResumeFileName = await _blobService.UploadBlob(fileName, SD.Storage_Container, addJobApplicationDto.Resume);
+
+
                 var jobApplicationDto = await _service.JobApplicationService.CreateJobApplicationAsync(addJobApplicationDto);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobApplicationDto;
@@ -122,7 +139,19 @@ namespace WeGapApi.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var jobApplicationDto = await _service.JobApplicationService.UpdateJobApplication(id, updateJobApplicationDto);
+                //var jobApplicationFromDb = await _service.JobApplicationService.GetJobApplicationById(id);
+
+                //if (jobApplicationFromDb.ResumeFileName != null || jobApplicationFromDb.ResumeFileName.Length > 0)
+                //{
+                //    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(updateJobApplicationDto.Resume.FileName)}";
+                //    await _blobService.DeleteBlob(jobApplicationFromDb.ResumeFileName.Split('/').Last(), SD.Storage_Container);
+                //    jobApplicationFromDb.ResumeFileName = await _blobService.UploadBlob(fileName, SD.Storage_Container, updateJobApplicationDto.Resume);
+                //    updateJobApplicationDto.ResumeFileName = await _blobService.UploadBlob(fileName, SD.Storage_Container, updateJobApplicationDto.Resume);
+
+
+                //}
+
+                 var jobApplicationDto = await _service.JobApplicationService.UpdateJobApplication(id, updateJobApplicationDto);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobApplicationDto;
                 return Ok(_response);
@@ -150,7 +179,11 @@ namespace WeGapApi.Controllers
         public async Task<IActionResult> DeleteJobApplication(Guid id)
         {
             try{
-                var jobApplicationDto = _service.JobApplicationService.DeleteJobApplication(id);
+
+                var jobApplicationFromDb = await _service.JobApplicationService.GetJobApplicationById(id);
+                await _blobService.DeleteBlob(jobApplicationFromDb.ResumeFileName.Split('/').Last(), SD.Storage_Container);
+                var jobApplicationDto = await _service.JobApplicationService.DeleteJobApplication(id);
+
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = jobApplicationDto;
                 return Ok(_response);

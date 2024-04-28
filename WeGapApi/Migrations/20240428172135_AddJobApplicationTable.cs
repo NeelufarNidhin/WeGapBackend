@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WeGapApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedJobApplicationTable : Migration
+    public partial class AddJobApplicationTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,10 +17,13 @@ namespace WeGapApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Employer = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AppliedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Jobtitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Employer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Jobtitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Availability = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverLetter = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ResumeFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobStatus = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

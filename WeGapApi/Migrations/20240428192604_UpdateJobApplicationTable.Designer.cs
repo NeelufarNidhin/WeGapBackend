@@ -12,8 +12,8 @@ using WeGapApi.Data;
 namespace WeGapApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240424001843_AddedJobApplicationTable")]
-    partial class AddedJobApplicationTable
+    [Migration("20240428192604_UpdateJobApplicationTable")]
+    partial class UpdateJobApplicationTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -478,11 +478,18 @@ namespace WeGapApi.Migrations
                     b.Property<DateTime>("AppliedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Availability")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Employer")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("Employer")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("JobId")
                         .HasColumnType("uniqueidentifier");
@@ -491,6 +498,9 @@ namespace WeGapApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Jobtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResumeFileName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -521,25 +531,6 @@ namespace WeGapApi.Migrations
                     b.HasIndex("JobSkillId");
 
                     b.ToTable("JobJobSkill");
-                });
-
-            modelBuilder.Entity("WeGapApi.Models.JobPosting", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("PostedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("JobPostings");
                 });
 
             modelBuilder.Entity("WeGapApi.Models.JobSkill", b =>
@@ -744,17 +735,6 @@ namespace WeGapApi.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("JobSkill");
-                });
-
-            modelBuilder.Entity("WeGapApi.Models.JobPosting", b =>
-                {
-                    b.HasOne("WeGapApi.Models.Job", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("WeGapApi.Models.Skill", b =>
