@@ -1,22 +1,29 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeGapApi.Models.Dto
 {
 	public class UpdateJobApplicationDto
 	{
-       
-        [Required]
-        public Guid EmployeeId { get; set; }
-        public Employee Employee { get; set; }
 
-        [Required]
+        
+        public Guid EmployeeId { get; set; }
+        
         public Guid JobId { get; set; }
-        public Job Job { get; set; }
+        public Guid Employer { get; set; }
        
-        public string JobStatus { get; set; }
+       
         public string Jobtitle { get; set; }
-        public string Employer { get; set; }
+       
+        public string Availability { get; set; }
+        [MaxLength(1000)]
+        public string CoverLetter { get; set; }
+        
+        public IFormFile Resume { get; set; }
+        public string ResumeFileName { get; set; }
+
+        public string JobStatus { get; set; }
     }
 }
 
