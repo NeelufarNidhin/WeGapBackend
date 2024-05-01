@@ -16,23 +16,27 @@ using WeGapApi.Services.Services.Interface;
 using WeGapApi.Services;
 using Azure.Storage.Blobs;
 using WeGapApi.Chats;
+using WeGapApi.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddUserSecrets<DbInitializer>();
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WegapConnection"));
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
-    AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
 
 
 //Key in appsettings.json is accessed
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
-
+//var key = Environment.GetEnvironmentVariable("ApiSettings:Secret");
 
 //Add authentication using JWT token
 
@@ -67,11 +71,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
 builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
@@ -145,18 +149,37 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+if (app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+   // app.UseHsts();
+
 app.UseHttpsRedirection();
 
 //app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
-
+//app.UseDeveloperExceptionPage();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+SeedDatabase();
 app.UseCors();
 app.MapHub<ChatHub>("/chat");
 
 
 app.Run();
+
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+
+    }
+}
 
