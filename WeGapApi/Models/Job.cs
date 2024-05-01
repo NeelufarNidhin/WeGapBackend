@@ -12,7 +12,7 @@ namespace WeGapApi.Models
         public string Experience { get; set; }
         public string Salary { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string Status { get; set; }
+        //public string Status { get; set; }
 
         //Navigation property
         public Guid EmployerId { get; set; }

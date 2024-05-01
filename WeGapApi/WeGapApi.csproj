@@ -41,6 +41,7 @@
     <None Remove="Services\" />
     <None Remove="Services\Services.Interface\" />
     <None Remove="Chats\" />
+    <None Remove="DbInitializer\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -53,5 +54,6 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Services.Interface\" />
     <Folder Include="Chats\" />
+    <Folder Include="DbInitializer\" />
   </ItemGroup>
 </Project>
