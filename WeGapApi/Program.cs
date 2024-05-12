@@ -163,8 +163,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseHsts();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+   
     // app.UseDefaultFiles();
 }
 
