@@ -1,0 +1,42 @@
+
+name: Build and deploy 
+
+env:
+  AZURE_WEBAPP_NAME: wegapapi   
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish"    
+             
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Restore
+        run: dotnet restore ./WeGapApi.sln
+        
+      - name: Build with dotnet
+        run: dotnet build ./WeGapApi.sln --configuration Release --no-restore
+
+      - name: dotnet publish
+        run: dotnet publish ./WeGapApi.sln --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
