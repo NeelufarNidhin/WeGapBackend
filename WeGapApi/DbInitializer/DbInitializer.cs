@@ -48,7 +48,7 @@ namespace WeGapApi.DbInitializer
 
 
                 //create admin user
-                   var adminPwd = _configuration["AdminPwd"];
+                   var adminPwd = _configuration.GetValue<string>("AdminPwd");
                // var adminPwd = Environment.GetEnvironmentVariable("ADMINPWD");
 
                 _userManager.CreateAsync(new ApplicationUser

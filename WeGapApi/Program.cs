@@ -17,13 +17,22 @@ using WeGapApi.Services;
 using Azure.Storage.Blobs;
 using WeGapApi.Chats;
 using WeGapApi.DbInitializer;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddUserSecrets<DbInitializer>();
+
+
+//builder.Configuration.AddUserSecrets<DbInitializer>();
 
 var configuration = builder.Configuration;
 
-// Add services to the container.
+
+var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
+var azureCredential = new DefaultAzureCredential(includeInteractiveCredentials: true);
+builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -31,6 +40,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
 
 
 
@@ -92,7 +102,9 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+
+       // builder.WithOrigins("https://wegapfrontend.azurewebsites.net")
+       builder.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod()
             .WithExposedHeaders("*");
@@ -141,32 +153,37 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-   // app.UseDeveloperExceptionPage();
+    // app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    // app.UseDefaultFiles();
 }
 
-if (app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-   // app.UseHsts();
+
+//if (app.Environment.IsProduction())
+//     app.UseHsts();
 
 app.UseHttpsRedirection();
 
-//app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
+app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("*"));
 //app.UseDeveloperExceptionPage();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 SeedDatabase();
-app.UseCors();
+//app.UseCors();
+
 app.MapHub<ChatHub>("/chat");
 
 

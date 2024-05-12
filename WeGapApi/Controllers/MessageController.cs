@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using WeGapApi.Data;
 using WeGapApi.Models;
 using WeGapApi.Repository.Interface;
 using WeGapApi.Services.Services.Interface;
+using WeGapApi.Utility;
 
 namespace WeGapApi.Controllers
 {
@@ -22,9 +25,9 @@ namespace WeGapApi.Controllers
             _messageRepository = messageRepository;
             _hubContext = hubContext;
         }
-        
-       
 
+
+        [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
         [HttpGet("{senderId}/{receiverId}")]
         public async Task<IActionResult> GetMessages(string senderId, string receiverId)
         {

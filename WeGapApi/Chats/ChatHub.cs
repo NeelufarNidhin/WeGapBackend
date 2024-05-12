@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WeGapApi.Data;
 using WeGapApi.Models;
+using WeGapApi.Utility;
 
 namespace WeGapApi.Chats
 {
-    //[Authorize]
+    //[Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
     public class ChatHub : Hub
 	{
         private readonly ApplicationDbContext _context;

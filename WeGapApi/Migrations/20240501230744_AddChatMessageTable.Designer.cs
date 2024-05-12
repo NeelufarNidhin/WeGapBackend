@@ -12,8 +12,8 @@ using WeGapApi.Data;
 namespace WeGapApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240501033714_UpdateJobTable")]
-    partial class UpdateJobTable
+    [Migration("20240501230744_AddChatMessageTable")]
+    partial class AddChatMessageTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
