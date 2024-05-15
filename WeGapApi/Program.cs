@@ -163,13 +163,13 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseHsts();
-   
+    app.UseSwagger();
+    app.UseSwaggerUI();
     // app.UseDefaultFiles();
 }
 
 
-//if (app.Environment.IsProduction())
-//     app.UseHsts();
+
 
 app.UseHttpsRedirection();
 
