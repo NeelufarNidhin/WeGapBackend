@@ -11,6 +11,10 @@ namespace WeGapApi.Services.Services.Interface
         Task<JobApplicationDto> GetJobApplicationById(Guid id);
         Task<JobApplicationDto> UpdateJobApplication(Guid id, UpdateJobApplicationDto updateJobApplicationDto);
         Task<JobApplicationDto> DeleteJobApplication(Guid id);
+        Task<IEnumerable<JobApplicationDto>> GetEmployeeJobAppList(Guid employeeId , int pageNumber, int pageSize);
+        Task<IEnumerable<JobApplicationDto>> GetEmployerJobAppList(Guid employerId, int pageNumber, int pageSize);
+        Task<IEnumerable<JobApplicationDto>> GetTotalEmployeeJobAppList(Guid employeeId);
+        Task<IEnumerable<JobApplicationDto>> GetTotalEmployerJobAppList(Guid employerId);
     }
 }
 

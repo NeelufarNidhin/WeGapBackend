@@ -32,6 +32,22 @@ namespace WeGapApi.Services
             return jobApplicationDto;
         }
 
+        public async Task<IEnumerable<JobApplicationDto>> GetEmployeeJobAppList(Guid employeeId, int pageNumber, int pageSize)
+        {
+            var jobApplicationDomain = await _repository.JobApplication.GetEmployeeJobAppList(employeeId);
+            var paginatedJobApps = jobApplicationDomain.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var jobApplicationDto = _mapper.Map<IEnumerable<JobApplicationDto>>(jobApplicationDomain);
+            return jobApplicationDto;
+        }
+
+        public async Task<IEnumerable<JobApplicationDto>> GetEmployerJobAppList(Guid employerId, int pageNumber, int pageSize)
+        {
+            var jobApplicationDomain = await _repository.JobApplication.GetEmployerJobAppList(employerId);
+            var paginatedJobApps = jobApplicationDomain.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var jobApplicationDto = _mapper.Map<IEnumerable<JobApplicationDto>>(paginatedJobApps);
+            return jobApplicationDto;
+        }
+
         public async Task<IEnumerable<JobApplicationDto>> GetAllJobApplicationAsync()
         {
             var jobApplicationDomain = await _repository.JobApplication.GetAllJobApplicationAsync();
@@ -52,6 +68,22 @@ namespace WeGapApi.Services
             var jobApplication = _mapper.Map<JobApplication>(updateJobApplicationDto);
             var jobApplicationDomain = await _repository.JobApplication.UpdateJobApplication(id,jobApplication);
             var jobApplicationDto = _mapper.Map<JobApplicationDto>(jobApplicationDomain);
+            return jobApplicationDto;
+        }
+
+        public async Task<IEnumerable<JobApplicationDto>> GetTotalEmployeeJobAppList(Guid employeeId)
+        {
+            var jobApplicationDomain = await _repository.JobApplication.GetEmployeeJobAppList(employeeId);
+            
+            var jobApplicationDto = _mapper.Map<IEnumerable<JobApplicationDto>>(jobApplicationDomain);
+            return jobApplicationDto;
+        }
+
+        public async Task<IEnumerable<JobApplicationDto>> GetTotalEmployerJobAppList(Guid employerId)
+        {
+            var jobApplicationDomain = await _repository.JobApplication.GetEmployeeJobAppList(employerId);
+
+            var jobApplicationDto = _mapper.Map<IEnumerable<JobApplicationDto>>(jobApplicationDomain);
             return jobApplicationDto;
         }
     }

@@ -5,20 +5,20 @@ using WeGapApi.Repository.Interface;
 
 namespace WeGapApi.Repository
 {
-	public class JobApplicationRepository : IJobApplicationRepository
-	{
+    public class JobApplicationRepository : IJobApplicationRepository
+    {
         private readonly ApplicationDbContext _context;
-		public JobApplicationRepository(ApplicationDbContext context)
-		{
+        public JobApplicationRepository(ApplicationDbContext context)
+        {
             _context = context;
-		}
+        }
 
         public async Task<JobApplication> CreateJobApplicationAsync(JobApplication jobApplication)
         {
             try
             {
                 await _context.JobApplications.AddAsync(jobApplication);
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return jobApplication;
             }
             catch (Exception ex)
@@ -31,25 +31,25 @@ namespace WeGapApi.Repository
         {
             var jobApplicationFromDb = _context.JobApplications.FirstOrDefault(x => x.Id == id);
 
-            if(jobApplicationFromDb is  null)
+            if (jobApplicationFromDb is null)
             {
                 throw new InvalidOperationException("job application not found");
             }
 
-             _context.JobApplications.Remove(jobApplicationFromDb);
+            _context.JobApplications.Remove(jobApplicationFromDb);
             await _context.SaveChangesAsync();
             return jobApplicationFromDb;
         }
 
         public async Task<IEnumerable<JobApplication>> GetAllJobApplicationAsync()
         {
-           var jobApplications=  _context.JobApplications.ToList();
+            var jobApplications = _context.JobApplications.ToList();
             return jobApplications;
         }
 
         public async Task<JobApplication> GetJobApplicationById(Guid id)
         {
-            var jobApplicationFromDb =  _context.JobApplications.FirstOrDefault(x => x.Id == id);
+            var jobApplicationFromDb = _context.JobApplications.FirstOrDefault(x => x.Id == id);
 
             if (jobApplicationFromDb is null)
             {
@@ -62,7 +62,7 @@ namespace WeGapApi.Repository
 
         public async Task<JobApplication> UpdateJobApplication(Guid id, JobApplication jobApplication)
         {
-            var jobApplicationFromDb =  _context.JobApplications.FirstOrDefault(x => x.Id == id);
+            var jobApplicationFromDb = _context.JobApplications.FirstOrDefault(x => x.Id == id);
 
             if (jobApplicationFromDb is null)
             {
@@ -77,6 +77,23 @@ namespace WeGapApi.Repository
             _context.JobApplications.Update(jobApplicationFromDb);
             _context.SaveChanges();
             return jobApplicationFromDb;
+        }
+
+
+        public async Task<IEnumerable<JobApplication>> GetEmployeeJobAppList(Guid employeeId)
+        {
+
+            var jobApplications =  _context.JobApplications.Where(u => u.EmployeeId == employeeId);
+            return jobApplications;
+
+        }
+
+        public async Task<IEnumerable<JobApplication>> GetEmployerJobAppList(Guid employerId)
+        {
+
+            var jobApplications = _context.JobApplications.Where(u => u.Employer == employerId);
+            return jobApplications;
+
         }
     }
 }

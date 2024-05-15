@@ -10,6 +10,8 @@ namespace WeGapApi.Repository.Interface
 		Task<JobApplication> GetJobApplicationById(Guid id);
 		Task<JobApplication> UpdateJobApplication(Guid id, JobApplication jobApplication);
 		Task<JobApplication> DeleteJobApplication(Guid id);
- 	}
+        Task<IEnumerable<JobApplication>> GetEmployeeJobAppList(Guid employeeId);
+        Task<IEnumerable<JobApplication>> GetEmployerJobAppList(Guid employerId);
+    }
 }
 

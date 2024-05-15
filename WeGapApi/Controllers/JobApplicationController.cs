@@ -7,6 +7,7 @@ using WeGapApi.Services.Services.Interface;
 using WeGapApi.Utility;
 using System.Net;
 using WeGapApi.Models.Dto;
+using System.Text.Json;
 
 namespace WeGapApi.Controllers
 {
@@ -53,6 +54,88 @@ namespace WeGapApi.Controllers
 
 
         }
+        [HttpGet]
+        [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
+        public async Task<IActionResult> GetEmployeeJobApplication([FromRoute] Guid employeeId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+        {
+            try
+            {
+                var totalJobApps = await _service.JobApplicationService.GetTotalEmployeeJobAppList(employeeId);
+                var jobApplicationDto = await _service.JobApplicationService.GetEmployeeJobAppList(employeeId,pageNumber,pageSize);
+                Pagination pagination = new Pagination
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize,
+                    TotalRecords = totalJobApps.Count()
+                };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = jobApplicationDto;
+                return Ok(_response);
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = SD.Role_Employer )]
+        public async Task<IActionResult> GetEmployerJobApplication([FromRoute]Guid employerId, [FromQuery] int pageNumber=1, [FromQuery] int pagesize = 5)
+        {
+            try
+            {
+                var totalJobApps = await _service.JobApplicationService.GetTotalEmployerJobAppList(employerId);
+                var jobApplicationDto = await _service.JobApplicationService.GetEmployerJobAppList(employerId,pageNumber,pagesize);
+
+                Pagination pagination = new Pagination
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pagesize,
+                    TotalRecords = totalJobApps.Count()
+                };
+
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = jobApplicationDto;
+                return Ok(_response);
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+
+
+        }
+
         [HttpGet]
         [Route("{id}")]
         [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
