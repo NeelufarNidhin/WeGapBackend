@@ -12,6 +12,7 @@ namespace WeGapApi.Data
         Task<Employer> AddEmployerAsync(Employer employer);
         Task<Employer?> UpdateEmployerAsync(Guid id, Employer employer);
         Task<Employer?> DeleteEmployerAsync(Guid id);
+       
 
     }
 
