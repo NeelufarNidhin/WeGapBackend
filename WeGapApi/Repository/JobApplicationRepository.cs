@@ -18,6 +18,11 @@ namespace WeGapApi.Repository
             try
             {
                 await _context.JobApplications.AddAsync(jobApplication);
+
+                var jobFromDb = _context.Jobs.FirstOrDefault(u => u.Id == jobApplication.JobId);
+
+                jobFromDb.Status = true;
+                _context.Jobs.Update(jobFromDb);
                 await _context.SaveChangesAsync();
                 return jobApplication;
             }
