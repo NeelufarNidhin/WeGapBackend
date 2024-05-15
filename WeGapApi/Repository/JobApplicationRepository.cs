@@ -83,7 +83,7 @@ namespace WeGapApi.Repository
         public async Task<IEnumerable<JobApplication>> GetEmployeeJobAppList(Guid employeeId)
         {
 
-            var jobApplications =  _context.JobApplications.Where(u => u.EmployeeId == employeeId);
+            var jobApplications =  _context.JobApplications.Where(u => u.EmployeeId == employeeId).ToList();
             return jobApplications;
 
         }
@@ -91,7 +91,7 @@ namespace WeGapApi.Repository
         public async Task<IEnumerable<JobApplication>> GetEmployerJobAppList(Guid employerId)
         {
 
-            var jobApplications = _context.JobApplications.Where(u => u.Employer == employerId);
+            var jobApplications = _context.JobApplications.Where(u => u.Employer == employerId).ToList();
             return jobApplications;
 
         }

@@ -55,6 +55,7 @@ namespace WeGapApi.Controllers
 
         }
         [HttpGet]
+        [Route("{employeeId}")]
         [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
         public async Task<IActionResult> GetEmployeeJobApplication([FromRoute] Guid employeeId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
         {
@@ -96,6 +97,7 @@ namespace WeGapApi.Controllers
 
 
         [HttpGet]
+        [Route("{employerId}")]
         [Authorize(Roles = SD.Role_Employer )]
         public async Task<IActionResult> GetEmployerJobApplication([FromRoute]Guid employerId, [FromQuery] int pageNumber=1, [FromQuery] int pagesize = 5)
         {
