@@ -17,12 +17,13 @@ namespace WeGapApi.Repository
         {
             try
             {
+                jobApplication.Status = true;
                 await _context.JobApplications.AddAsync(jobApplication);
 
-                var jobFromDb = _context.Jobs.FirstOrDefault(u => u.Id == jobApplication.JobId);
+                //var jobFromDb = _context.Jobs.FirstOrDefault(u => u.Id == jobApplication.JobId);
 
-                jobFromDb.Status = true;
-                _context.Jobs.Update(jobFromDb);
+                //jobFromDb.Status = true;
+                //_context.Jobs.Update(jobFromDb);
                 await _context.SaveChangesAsync();
                 return jobApplication;
             }
@@ -99,6 +100,12 @@ namespace WeGapApi.Repository
             var jobApplications = _context.JobApplications.Where(u => u.Employer == employerId).ToList();
             return jobApplications;
 
+        }
+
+        public async Task<JobApplication> GetJobAppStatus(Guid jobId, Guid employeeId)
+        {
+            var jobApplication =  _context.JobApplications.FirstOrDefault(u => u.JobId == jobId && u.EmployeeId == employeeId);
+            return jobApplication;
         }
     }
 }

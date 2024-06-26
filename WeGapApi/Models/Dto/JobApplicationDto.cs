@@ -13,7 +13,7 @@ namespace WeGapApi.Models.Dto
         public Guid JobId { get; set; }
         public Job Job { get; set; }
         public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
-       
+        public Boolean Status { get; set; }
         public string Jobtitle { get; set; }
         
         public string Availability { get; set; }

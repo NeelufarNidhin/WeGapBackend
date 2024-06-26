@@ -186,8 +186,31 @@ namespace WeGapApi.Controllers
             }
         }
 
+        [HttpPost("forgotpassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPassword)
+        {
+            await _service.AuthenticationService.ForgotPasswordAsync(forgotPassword.Email);
+            return NoContent();
+        }
 
+        [HttpPost("resetpassword")]
+        public async Task< IActionResult> ResetPassword([FromBody] ResetPasswordDto resetDto)
+        {
+            var result = await _service.AuthenticationService.ResetPasswordAsync(resetDto);
 
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+
+            foreach(var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
+            return BadRequest(ModelState);
+        }
+ 
 
 
     }

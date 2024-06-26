@@ -10,6 +10,9 @@ namespace WeGapApi.Services.Services.Interface
 		Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto);
 		Task<bool> ResendOTP(string userId);
 		Task<bool> LoginWithOTP(string otp);
-	}
+		Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto resetPassword);
+		Task ForgotPasswordAsync(string email);
+    }
+   
 }
 

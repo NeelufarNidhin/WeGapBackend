@@ -136,6 +136,38 @@ namespace WeGapApi.Controllers
 
         }
 
+        [HttpGet("job/{jobId}")]
+        [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]
+        public async Task<IActionResult> GetJobAppStatus([FromRoute] Guid jobId, Guid employeeId)
+        {
+            try
+            {
+                var jobApplication = await _service.JobApplicationService.GetJobAppStatus(jobId,employeeId);
+               
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = jobApplication;
+                return Ok(_response);
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return BadRequest(_response);
+            }
+
+
+        }
+
         [HttpGet]
         [Route("{id}")]
         [Authorize(Roles = SD.Role_Employer + " ," + SD.Role_Employee)]

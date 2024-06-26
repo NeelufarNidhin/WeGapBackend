@@ -7,8 +7,9 @@ namespace WeGapApi.Models
 	public class ApplicationUser : IdentityUser
 	{
         [Required(ErrorMessage = "First Name is a required !!")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First Name must contain only characters")]
         public string FirstName { get; set; }
-
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last name  must contain only characters")]
         [Required(ErrorMessage = "Last name is a required !!")]
         public string LastName { get; set; }
         public string Role { get; set; }

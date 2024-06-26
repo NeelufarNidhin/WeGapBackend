@@ -11,7 +11,7 @@ namespace WeGapApi.Models.Dto
         public string Experience { get; set; }
         public string Salary { get; set; }
         public DateTime CreatedAt { get; set; }
-        public Boolean Status { get; set; } 
+      
         //Navigation property
         public Guid EmployerId { get; set; }
         public Employer Employer { get; set; }

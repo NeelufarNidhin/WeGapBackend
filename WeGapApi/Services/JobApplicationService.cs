@@ -86,6 +86,14 @@ namespace WeGapApi.Services
             var jobApplicationDto = _mapper.Map<IEnumerable<JobApplicationDto>>(jobApplicationDomain);
             return jobApplicationDto;
         }
+
+        public async Task<JobApplicationDto> GetJobAppStatus(Guid jobId,Guid employeeId)
+        {
+            var jobApplicationDomain = await _repository.JobApplication.GetJobAppStatus(jobId,employeeId);
+
+            var jobApplicationDto = _mapper.Map<JobApplicationDto>(jobApplicationDomain);
+            return jobApplicationDto;
+        }
     }
 }
 

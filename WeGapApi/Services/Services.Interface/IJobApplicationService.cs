@@ -15,6 +15,7 @@ namespace WeGapApi.Services.Services.Interface
         Task<IEnumerable<JobApplicationDto>> GetEmployerJobAppList(Guid employerId, int pageNumber, int pageSize);
         Task<IEnumerable<JobApplicationDto>> GetTotalEmployeeJobAppList(Guid employeeId);
         Task<IEnumerable<JobApplicationDto>> GetTotalEmployerJobAppList(Guid employerId);
+        Task<JobApplicationDto> GetJobAppStatus(Guid jobId, Guid employeeId);
     }
 }
 
