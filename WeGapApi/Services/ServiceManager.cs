@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 using WeGapApi.Data;
 using WeGapApi.Models;
 using WeGapApi.Repository.Interface;
@@ -25,7 +26,7 @@ namespace WeGapApi.Services
        
 
 		public ServiceManager(IRepositoryManager repositoryManager,IMapper mapper, UserManager<ApplicationUser> userManager,IBlobService blobService,
-            ApplicationDbContext db, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
+            ApplicationDbContext db, IConfiguration configuration, IEmailSender emailSender, RoleManager<IdentityRole> roleManager, IOptions<ClientConfiguration> clientConfiguration)
 		{
             _userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper));
             _employeeService = new Lazy<IEmployeeService>(() => new EmployeeService(repositoryManager, mapper,blobService));
@@ -36,7 +37,7 @@ namespace WeGapApi.Services
             _jobSkillService = new Lazy<IJobSkillService>(() => new JobSkillService(repositoryManager, mapper));
             _jobTypeService = new Lazy<IJobTypeService>(() => new JobTypeService(repositoryManager, mapper));
             _skillService = new Lazy<ISkillService>(() => new SkillService(repositoryManager, mapper));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(db, userManager,roleManager, configuration, emailSender));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(db, userManager,roleManager, configuration, emailSender,clientConfiguration));
             _jobApplicationService = new Lazy<IJobApplicationService>(() => new JobApplicationService(repositoryManager, mapper));
         }
 

@@ -101,7 +101,7 @@ namespace WeGapApi.Data
             employeefromDb.Address = employee.Address;
             employeefromDb.City = employee.City;
             employeefromDb.DOB = employee.DOB;
-            employee.Gender = employee.Gender;
+            employeefromDb.Gender = employee.Gender;
             employeefromDb.MobileNumber = employee.MobileNumber;
             employeefromDb.Pincode = employee.Pincode;
             employeefromDb.State = employee.State;

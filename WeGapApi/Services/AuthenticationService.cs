@@ -2,8 +2,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WeGapApi.Data;
 using WeGapApi.Models;
@@ -21,15 +24,20 @@ namespace WeGapApi.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
-       
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration configuration;
+        private readonly ClientConfiguration _clientConfiguration;
+
         public AuthenticationService(ApplicationDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-             IConfiguration configuration, IEmailSender emailSender)
+             IConfiguration configuration, IEmailSender emailSender, IOptions<ClientConfiguration> clientConfiguration)
 		{
             _db = db;
             _roleManager = roleManager;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _userManager = userManager;
             _emailSender = emailSender;
+            _clientConfiguration = clientConfiguration.Value;
+           // _httpContextAccessor = httpContextAccessor;
           
         }
 
@@ -201,6 +209,50 @@ namespace WeGapApi.Services
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+
+        public async Task ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User with email: {email} does not exists");
+
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var link = $"{_clientConfiguration.Url}/resetpassword?code={code}&userid={user.Id}";
+           
+
+            await _emailSender.SendEmailAsync(user.Email, "Reset Password", $"<h1>Reset Password</h1><p>Click <a href =\"{link}\">here</a> to reset password.</p>");
+
+        
+        }
+        
+        public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto resetPassword)
+        {
+            var user = await _userManager.FindByIdAsync(resetPassword.UserId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User with Id: {resetPassword.UserId} does not exists");
+
+            }
+
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPassword.Code));
+
+            var result = await _userManager.ResetPasswordAsync(user, code, resetPassword.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _emailSender.SendEmailAsync(user.Email, "Password Reset Complete", $"<p>Your password reset successfully.</p>");
+            }
+
+            return result;
+
         }
     }
 }

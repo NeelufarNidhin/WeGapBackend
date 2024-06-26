@@ -5,10 +5,10 @@ namespace WeGapApi.Models.Dto
 {
 	public class SignUpRequestDto
 	{
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Use letters only please")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First Name must contain only characters")]
         [Required(ErrorMessage = "FirstName is required")]
 		public string FirstName { get; set; }
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Use letters only please")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last Name must contain only characters")]
         [Required(ErrorMessage = "LastName is required")]
         public string LastName { get; set; }
         [Required(ErrorMessage = "Email is required")]

@@ -17,7 +17,7 @@ namespace WeGapApi.Models
         public DateTime AppliedDate { get; set; } = DateTime.UtcNow;
         
         public string Jobtitle { get; set; }
-       
+        public Boolean Status { get; set; } = false;
         public string Availability { get; set; }
         [MaxLength(1000)]
         public string CoverLetter {get;set;}

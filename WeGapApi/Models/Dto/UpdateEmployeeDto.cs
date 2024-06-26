@@ -14,7 +14,9 @@ namespace WeGapApi.Models.Dto
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
         public int Pincode { get; set; }
-        public int MobileNumber { get; set; }
+        [Required(ErrorMessage = "Mobile Number is a required !!")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile Number must be exactly 10 digits.")]
+        public string MobileNumber { get; set; }
         public string Bio { get; set; }
         public IFormFile Imagefile { get; set; }
         public string ImageName { get; set; }

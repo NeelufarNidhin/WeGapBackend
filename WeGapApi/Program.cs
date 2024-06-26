@@ -20,6 +20,7 @@ using WeGapApi.DbInitializer;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +34,7 @@ var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!
 var azureCredential = new DefaultAzureCredential(includeInteractiveCredentials: true);
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 
-
+builder.Services.Configure<ClientConfiguration>(builder.Configuration.GetSection("Client"));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("WegapConnection"));

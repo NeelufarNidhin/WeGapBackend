@@ -20,7 +20,8 @@ namespace WeGapApi.Models
         public string City { get; set; }
         public int Pincode { get; set; }
         [Required(ErrorMessage = "Mobile Number is a required !!")]
-        public int MobileNumber { get; set; }
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile Number must be exactly 10 digits.")]
+        public string MobileNumber { get; set; }
         public string Bio { get; set; }
         
         public string ImageName { get; set; }
